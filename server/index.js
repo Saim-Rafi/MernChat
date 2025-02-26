@@ -10,9 +10,9 @@ app.use(express.json());
 app.use(cors());
 app.use("/api/users", userRoute);
 
-app.get('/',(req, res) => {
-    res.send('hello welcome to mern chat app');
-})
+app.get("/", (req, res) => {
+  res.send("hello welcome to mern chat app");
+});
 
 const port = process.env.PORT || 5001;
 const uri = process.env.ATLAS_URI;

@@ -1,5 +1,8 @@
 --express mongoose cors dotenv nodemon
 -- bcrpyt jsonwebtoken validator
+-- vite
+
 
 
 npx nodemon in server
+npm run dev in client

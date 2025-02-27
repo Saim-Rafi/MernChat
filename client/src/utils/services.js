@@ -19,7 +19,7 @@
 //       message = data;
 //     }
 
-//     return { error: true, message};
+//     return { error: true, message };
 //   }
 //   return data;
 // };
@@ -54,4 +54,3 @@ export const postRequest = async (url, body) => {
     return { error: true, message: error.message };
   }
 };
-

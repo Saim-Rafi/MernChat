@@ -8,5 +8,5 @@ const chatSchema = new mongoose.Schema(
   }
 );
 
-const chatModel = moongoose.model("Chat",chatSchema); 
+const chatModel = mongoose.model("Chat", chatSchema);
 module.exports = chatModel;

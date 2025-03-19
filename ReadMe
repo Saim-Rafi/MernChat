@@ -3,6 +3,11 @@
 -- vite
 
 
+--In Socket
+---socket.io
+---socket.io-client
+
+
 
 npx nodemon in server
 npm run dev in client

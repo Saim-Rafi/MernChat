@@ -8,7 +8,7 @@ import {
 } from "react";
 import { baseUrl, getRequest, postRequest } from "../utils/services";
 import { AuthContext } from "./AuthContext";
-import {io} from "socket.io-client"
+import { io } from "socket.io-client";
 
 export const ChatContext = createContext();
 
@@ -21,30 +21,64 @@ export const ChatContextProvider = ({ children, user }) => {
   const [messages, setMessages] = useState(null);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
   const [messagesError, setMessagesError] = useState(null);
-  const [sendTextMessageError,setSendTextMessageError] = useState(null);
-  const [newMessage,setNewMessage] = useState(null);
-  const [socket,setSocket] = useState(null);
-  const [onlineUsers,setOnlineUsers] = useState([]);
+  const [sendTextMessageError, setSendTextMessageError] = useState(null);
+  const [newMessage, setNewMessage] = useState(null);
+  const [socket, setSocket] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
-  console.log("OnlineUsers",onlineUsers);
+  console.log("OnlineUsers", onlineUsers);
 
   //intial socket
-   useEffect(()=>{
+  useEffect(() => {
     const newSocket = io("http://localhost:3000");
     setSocket(newSocket);
 
     return () => {
-        newSocket.disconnect();
-    }
-   },[user]);
+      newSocket.disconnect();
+    };
+  }, [user]);
 
-   useEffect(()=>{
+  //add online users
+  useEffect(() => {
     if (socket === null) return;
-    socket.emit("addNewUser",user?._id);
-    socket.on("getOnlineUsers",(res)=>{
-        setOnlineUsers(res);
+    socket.emit("addNewUser", user?._id);
+    socket.on("getOnlineUsers", (res) => {
+      setOnlineUsers(res);
+    });
+
+    return () => {
+      socket.off("getOnlineUsers");
+    };
+  }, [socket]);
+
+  //send Message
+  useEffect(() => {
+    if (socket === null) return;
+
+    const recipientId = currentChat?.members?.find((id) => id !== user?._id);
+
+
+    socket.emit("sendMessage",{...newMessage, recipientId})
+    
+  }, [newMessage]);
+
+
+  //receive message
+  useEffect(() => {
+    if (socket === null) return;
+    socket.on("getMessage",res=>{
+        if (currentChat?._id !==res.chatId) return;
+        setMessages((prev) => [...prev, res]);
+
     })
-   },[socket]);
+
+    return ()=>{
+        socket.off("getMessage")
+    }
+    
+  }, [socket,currentChat]);
+
+
 
   useEffect(() => {
     const getUsers = async () => {
@@ -120,7 +154,7 @@ export const ChatContextProvider = ({ children, user }) => {
         return setSendTextMessageError(response);
       }
       setNewMessage(response);
-      setMessages((prev)=>[...prev,response])
+      setMessages((prev) => [...prev, response]);
       setTextMesage("");
     },
     []
@@ -156,6 +190,7 @@ export const ChatContextProvider = ({ children, user }) => {
         messagesError,
         currentChat,
         sendTextMessage,
+        onlineUsers,
       }}
     >
       {children}

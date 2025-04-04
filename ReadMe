@@ -11,6 +11,7 @@
 
 npx nodemon in server
 npm run dev in client
+npx nodemon in socket
 
 
 --Registered user

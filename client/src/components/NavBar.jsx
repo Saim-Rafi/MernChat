@@ -12,7 +12,7 @@ const NavBar = () => {
       <Container>
         <h2>
           <Link to="/" className="link-light text-decoration-none">
-            Chat App
+          The Chattr Box
           </Link>
         </h2>
         {user && (

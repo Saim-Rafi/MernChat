@@ -18,7 +18,7 @@ app.use("/api/messages",messageRoute);
 
 
 app.get("/", (req, res) => {
-  res.send("hello welcome to mern chat app");
+  res.send("hello welcome to The Chattr Box");
 });
 
 const port = process.env.PORT || 5001;

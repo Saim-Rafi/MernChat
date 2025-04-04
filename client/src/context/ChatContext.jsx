@@ -218,6 +218,8 @@ export const ChatContextProvider = ({ children, user }) => {
     []
   );
 
+  const markThisUserNotificationAsRead=useCallback(()=>{},[])
+
   return (
     <ChatContext.Provider
       value={{

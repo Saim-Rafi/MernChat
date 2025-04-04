@@ -32,7 +32,7 @@ export const ChatContextProvider = ({ children, user }) => {
 
   //intial socket
   useEffect(() => {
-    const newSocket = io("http://localhost:3000");
+    const newSocket = io(import.meta.env.VITE_SOCKET_URL);
     setSocket(newSocket);
 
     return () => {
@@ -126,7 +126,7 @@ export const ChatContextProvider = ({ children, user }) => {
       }
     };
     getUserChats();
-  }, [user,notification]);
+  }, [user, notification]);
 
   useEffect(() => {
     const getMessages = async () => {

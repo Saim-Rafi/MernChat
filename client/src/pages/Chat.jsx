@@ -67,11 +67,19 @@ const Chat = () => {
       ) : (
         <Stack direction="horizontal" gap={4} className="align-items-start">
           <Stack className="messages-box flex-grow-0 pe-3" gap={3}>
-            {chats.map((chat, index) => (
+            {/* {chats.map((chat, index) => (
               <div key={index} onClick={() => updateCurrentChat(chat)}>
                 <UserChat chat={chat} user={user} />
               </div>
-            ))}
+            ))} */}
+
+            {[...new Map(chats.map((chat) => [chat._id, chat])).values()].map(
+              (chat) => (
+                <div key={chat._id} onClick={() => updateCurrentChat(chat)}>
+                  <UserChat chat={chat} user={user} />
+                </div>
+              )
+            )}
           </Stack>
           <ChatBox />
         </Stack>

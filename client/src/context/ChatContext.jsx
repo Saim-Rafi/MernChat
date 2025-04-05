@@ -31,9 +31,31 @@ export const ChatContextProvider = ({ children, user }) => {
   console.log("notification", notification);
 
   //intial socket
+  // useEffect(() => {
+  //   console.log("Socket URL:", import.meta.env.VITE_SOCKET_URL);
+  //   const newSocket = io(import.meta.env.VITE_SOCKET_URL);
+  //   setSocket(newSocket);
+
+  //   return () => {
+  //     newSocket.disconnect();
+  //   };
+  // }, [user]);
+
   useEffect(() => {
-    const newSocket = io(import.meta.env.VITE_SOCKET_URL);
+    const socketUrl =
+      import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
+    console.log("Attempting to connect to:", socketUrl);
+    const newSocket = io(socketUrl, {
+      reconnectionAttempts: 5,
+    });
     setSocket(newSocket);
+
+    newSocket.on("connect", () => {
+      console.log("Connected to server with ID:", newSocket.id);
+    });
+    newSocket.on("connect_error", (err) => {
+      console.error("Connection failed:", err.message);
+    });
 
     return () => {
       newSocket.disconnect();
@@ -85,12 +107,40 @@ export const ChatContextProvider = ({ children, user }) => {
     };
   }, [socket, currentChat]);
 
+  // useEffect(() => {
+  //   const getUsers = async () => {
+  //     const response = await getRequest(`${baseUrl}/users`);
+
+  //     if (response.error) {
+  //       return console.log("Error fetching users", response);
+  //     }
+
+  //     const pChats = response.filter((u) => {
+  //       let isChatCreated = false;
+  //       if (user?._id === u._id) return false;
+
+  //       if (userChats) {
+  //         isChatCreated = userChats?.some((chat) => {
+  //           return chat.members[0] === u._id || chat.members[1] === u._id;
+  //         });
+  //       }
+
+  //       return !isChatCreated;
+  //     });
+
+  //     setPotentialChats(pChats);
+  //     setAllUsers(response);
+  //   };
+  //   getUsers();
+  // }, [userChats]);
+
   useEffect(() => {
     const getUsers = async () => {
       const response = await getRequest(`${baseUrl}/users`);
 
       if (response.error) {
-        return console.log("Error fetching users", response);
+        console.log("Error fetching users", response);
+        return;
       }
 
       const pChats = response.filter((u) => {
@@ -99,32 +149,65 @@ export const ChatContextProvider = ({ children, user }) => {
 
         if (userChats) {
           isChatCreated = userChats?.some((chat) => {
-            return chat.members[0] === u._id || chat.members[1] === u._id;
+            return chat.members.includes(u._id);
           });
         }
 
         return !isChatCreated;
       });
 
-      setPotentialChats(pChats);
-      setAllUsers(response);
+      // Filter unique users based on their ID
+      const uniqueUsers = Array.from(
+        new Map(pChats.map((u) => [u._id, u])).values()
+      );
+
+      setPotentialChats(uniqueUsers);
+      setAllUsers(uniqueUsers);
     };
+
     getUsers();
   }, [userChats]);
 
+  // useEffect(() => {
+  //   const getUserChats = async () => {
+  //     if (!user?._id) return;
+  //     if (user?._id) {
+  //       setIsUserChatsLoading(true);
+  //       setUserChatsError(null);
+  //       const response = await getRequest(`${baseUrl}/chats/${user?._id}`);
+  //       setIsUserChatsLoading(false);
+  //       if (response?.error) {
+  //         return setUserChatsError(response);
+  //       }
+  //       setUserChats(response);
+  //     }
+  //   };
+  //   getUserChats();
+  // }, [user, notification]);
+
   useEffect(() => {
     const getUserChats = async () => {
-      if (user?._id) {
-        setIsUserChatsLoading(true);
-        setUserChatsError(null);
-        const response = await getRequest(`${baseUrl}/chats/${user?._id}`);
-        setIsUserChatsLoading(false);
-        if (response?.error) {
-          return setUserChatsError(response);
-        }
-        setUserChats(response);
+      if (!user?._id) return;
+
+      setIsUserChatsLoading(true);
+      setUserChatsError(null);
+
+      const response = await getRequest(`${baseUrl}/chats/${user?._id}`);
+      setIsUserChatsLoading(false);
+
+      if (response?.error) {
+        setUserChatsError(response);
+        return;
       }
+
+      // Use a Set to filter out duplicate chats based on their chat ID
+      const uniqueChats = Array.from(
+        new Map(response.map((chat) => [chat._id, chat])).values()
+      );
+
+      setUserChats(uniqueChats);
     };
+
     getUserChats();
   }, [user, notification]);
 

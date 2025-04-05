@@ -51,7 +51,7 @@ export const postRequest = async (url, body) => {
     }
     return data;
   } catch (error) {
-    console.error("Error in postRequest:", error);
+    //console.error("Error in postRequest:", error);
     return { error: true, message: error.message };
   }
 };

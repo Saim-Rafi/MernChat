@@ -28,7 +28,7 @@ export const ChatContextProvider = ({ children, user }) => {
   const [notification, setNotification] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
 
-  console.log("notification", notification);
+  //console.log("notification", notification);
 
   //intial socket
   // useEffect(() => {
@@ -44,17 +44,17 @@ export const ChatContextProvider = ({ children, user }) => {
   useEffect(() => {
     const socketUrl =
       import.meta.env.VITE_SOCKET_URL || "http://localhost:5000";
-    console.log("Attempting to connect to:", socketUrl);
+    //console.log("Attempting to connect to:", socketUrl);
     const newSocket = io(socketUrl, {
       reconnectionAttempts: 5,
     });
     setSocket(newSocket);
 
     newSocket.on("connect", () => {
-      console.log("Connected to server with ID:", newSocket.id);
+      //console.log("Connected to server with ID:", newSocket.id);
     });
     newSocket.on("connect_error", (err) => {
-      console.error("Connection failed:", err.message);
+      //console.error("Connection failed:", err.message);
     });
 
     return () => {
@@ -139,7 +139,7 @@ export const ChatContextProvider = ({ children, user }) => {
       const response = await getRequest(`${baseUrl}/users`);
 
       if (response.error) {
-        console.log("Error fetching users", response);
+        //console.log("Error fetching users", response);
         return;
       }
 
@@ -260,7 +260,7 @@ export const ChatContextProvider = ({ children, user }) => {
     );
 
     if (response.error) {
-      return console.log("Error creating chat", response);
+      //return console.log("Error creating chat", response);
     }
     setUserChats((prev) => [...prev, response]);
   }, []);

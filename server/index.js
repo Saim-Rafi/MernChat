@@ -115,7 +115,7 @@ const port = process.env.PORT || 5000; // Set to 5000 or match with client
 const uri = process.env.ATLAS_URI;
 
 const expressServer = app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  //console.log(`Server is running on port ${port}`);
 });
 
 mongoose
@@ -137,13 +137,13 @@ const io = new Server(expressServer, {
 let onlineUsers = [];
 
 io.on("connection", (socket) => {
-  console.log("New connection:", socket.id);
+  //console.log("New connection:", socket.id);
 
   socket.on("addNewUser", (userId) => {
     if (!onlineUsers.some((user) => user.userId === userId)) {
       onlineUsers.push({ userId, socketId: socket.id });
     }
-    console.log("OnlineUsers:", onlineUsers);
+    //console.log("OnlineUsers:", onlineUsers);
     io.emit("getOnlineUsers", onlineUsers);
   });
 
@@ -161,11 +161,11 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     onlineUsers = onlineUsers.filter((user) => user.socketId !== socket.id);
-    console.log("User disconnected, OnlineUsers:", onlineUsers);
+    //console.log("User disconnected, OnlineUsers:", onlineUsers);
     io.emit("getOnlineUsers", onlineUsers);
   });
 });
 
 io.on("connect_error", (err) => {
-  console.error("Socket.IO connection error:", err);
+  //console.error("Socket.IO connection error:", err);
 });

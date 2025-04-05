@@ -24,7 +24,8 @@
 //   return data;
 // };
 
-export const baseUrl = "http://localhost:5001/api";
+// export const baseUrl = "http://localhost:5001/api";
+export const baseUrl = "https://chattr-box.onrender.com/api";
 
 export const postRequest = async (url, body) => {
   try {

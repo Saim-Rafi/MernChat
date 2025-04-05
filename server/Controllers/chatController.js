@@ -1,4 +1,4 @@
-const { use } = require("react");
+//const { use } = require("react");
 const chatModel = require("../Models/chatModel");
 
 const createChat = async (req, res) => {
@@ -6,7 +6,7 @@ const createChat = async (req, res) => {
 
   try {
     const chat = await chatModel.findOne({
-      member: { $all: [firstId, secondId] },
+      members: { $all: [firstId, secondId] },
     });
     if (chat) {
       return res.status(200).json(chat);
